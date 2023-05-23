@@ -34,7 +34,7 @@ def read_thread_func():
 
         url = json_object['url']
         directory = '/c/users/moanr/music/unrenamed'
-        command = 'yt-dlp.exe -f 140 ' + url
+        command = 'yt-dlp.exe -o "%(artist)s - %(title)s.%(ext)s" -f 140 ' + url
         
         # Construct the command to be executed by Git Bash
         # this work but git bash didn't auto close when complete
