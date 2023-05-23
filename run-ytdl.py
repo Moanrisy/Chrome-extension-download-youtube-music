@@ -37,10 +37,13 @@ def read_thread_func():
         command = 'yt-dlp.exe -f 140 ' + url
         
         # Construct the command to be executed by Git Bash
-        git_bash_command = 'cd "{0}" && {1}; bash'.format(directory, command)
+        # this work but git bash didn't auto close when complete
+        ## git_bash_command = 'cd "{0}" && {1}; bash'.format(directory, command)
+        git_bash_command = 'cd "{0}" && start /WAIT {1} && exit'.format(directory, command)
         
         # Launch Git Bash with the command
         subprocess.Popen(['git-bash.exe', '-c', git_bash_command], shell=True)
+
     else:
       with open('./data', 'xb') as f:
         f.write(text)
