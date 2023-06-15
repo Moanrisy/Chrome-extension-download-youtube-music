@@ -1,9 +1,8 @@
 {
   "name": "com.moanrisy.gitbash",
   "description": "Git Bash Native Messaging Host",
-  "path": "C:\\Projects\\Chrome extensions\\run-ytdl.py",
+  "path": "C:\\Projects\\practices\\Chrome extensions\\run-ytdl.py",
   "type": "stdio",
   "allowed_origins": [
-    "chrome-extension://fnblegdmmhlgmgodieplndnblgokglaj/"
-  ]
+    "chrome-extension://minppjifdejpgoiloojgepdjkemjnfma/" ]
 }
