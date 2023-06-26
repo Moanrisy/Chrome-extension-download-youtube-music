@@ -1,0 +1,88 @@
+#!/usr/bin/env python
+
+import struct
+import sys
+import os
+import json
+import subprocess
+
+# On Windows, the default I/O mode is O_TEXT. Set this to O_BINARY
+# to avoid unwanted modifications of the input/output streams.
+## if sys.platform == "win32":
+##   import msvcrt
+##   msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
+##   msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
+
+# Thread that reads messages from the webapp.
+
+text = "hmm".encode()
+
+if (os.path.exists('./debug')):
+  with open('./debug', 'wb') as f:
+    f.write(text)
+    f.close()
+
+print("test") 
+print("Value to pass")
+sys.stdout.flush() 
+
+with open('/home/mars/debug', 'wb') as f:
+  text = "hmm".encode()
+  f.write(text)
+  f.close()
+
+def read_thread_func():
+  print("test2") 
+  while True:
+    # Read the message length (first 4 bytes).
+    print("test3") 
+#    with open('./testo', 'xb') as f:
+#      text = "hmm".encode()
+#      f.write(text)
+#      f.close()
+    text_length_bytes = sys.stdin.buffer.read(4)
+
+    if not text_length_bytes:
+      sys.exit(0)
+
+    # Unpack message length as 4 byte integer.
+    text_length = struct.unpack('=I', text_length_bytes)[0]
+    # Read the text (JSON object) of the message.
+    # text = sys.stdin.buffer.read(text_length).encode("utf-8")
+    text = sys.stdin.buffer.read(text_length).decode("utf-8")
+
+    json_object = json.loads(text)
+
+    if (os.path.exists('./data')):
+      with open('./data', 'wb') as f:
+        f.write(json_object['url'].encode())
+        f.close()
+
+        url = json_object['url']
+        directory = '/mnt/storage/Music/unrenamed'
+        command = 'yt-dlp -o "%(artist)s - %(title)s.%(ext)s" -f 140 ' + url
+        
+        git_bash_command = 'cd "{0}" && {1}'.format(directory, command)
+        
+        subprocess.Popen(['bash', '-c', git_bash_command])
+
+    else:
+      with open('./data', 'xb') as f:
+        f.write(text)
+        f.close()
+
+Helper function that sends a message to the webapp.
+def send_message(message):
+  # Write message size.
+  sys.stdout.write(struct.pack('=I', len(message.encode("utf-8"))))
+  
+  # Write the message itself.
+  sys.stdout.write(struct.pack(str(len(message.encode("utf-8")))+"s", message.encode("utf-8")))
+  sys.stdout.flush()
+
+def index():
+  send_message('{"msg": "Hello World!"}')
+  read_thread_func()
+
+if __name__ == '__main__':
+  index()
